@@ -69,12 +69,12 @@
       </view>
     </view>
     <BottomTabBar />
-    <view v-if="showCreateModal" class="drawer-overlay" @click="closeCreateModal">
+    <view v-if="showCreateDrawer" class="drawer-overlay" @click="closeCreateDrawer">
       <view class="drawer-content" @click.stop>
         <view class="drawer-handle"></view>
         <view class="drawer-header">
           <text class="drawer-title">{{ t('merchant.createInsurance') }}</text>
-          <view class="drawer-close" @click="closeCreateModal"><text>✕</text></view>
+          <view class="drawer-close" @click="closeCreateDrawer"><text>✕</text></view>
         </view>
         <view class="drawer-body">
           <view class="field-category">
@@ -169,6 +169,18 @@
         </view>
       </view>
     </view>
+
+    <ConfirmDrawer
+      :open="confirmDrawer.open"
+      :title="confirmDrawer.title"
+      :content="confirmDrawer.content"
+      :confirmText="confirmDrawer.confirmText"
+      :cancelText="confirmDrawer.cancelText"
+      :tone="confirmDrawerTone"
+      :loading="confirmDrawer.loading"
+      @confirm="confirmDrawer.onConfirm"
+      @cancel="confirmDrawer.onCancel"
+    />
   </view>
 </template>
 
@@ -180,6 +192,8 @@ import BottomTabBar from "../../components/BottomTabBar.vue";
 import SearchBar from "../../components/SearchBar.vue";
 import TextInput from "../../components/TextInput.vue";
 import TextArea from "../../components/TextArea.vue";
+import ConfirmDrawer from "../../components/ConfirmDrawer.vue";
+import { useConfirmDrawer } from "../../utils/confirmDrawer";
 import {
   getMerchantInsurances,
   createMerchantInsurance,
@@ -189,6 +203,9 @@ import {
 } from "../../api/merchant";
 
 const { t } = useI18n();
+
+const confirmDrawer = useConfirmDrawer();
+const confirmDrawerTone = ref<"primary" | "danger">("danger");
 
 interface Insurance {
   id: string;
@@ -296,7 +313,7 @@ const insuranceTypeOptions: { value: InsuranceType; label: string }[] = [
 ];
 const coverageAmountPresets = [50000, 100000, 200000, 500000];
 
-const showCreateModal = ref(false);
+const showCreateDrawer = ref(false);
 const isSubmitting = ref(false);
 const errors = ref<Record<string, string>>({});
 const customCoverageAmount = ref("");
@@ -329,8 +346,8 @@ function resetForm() {
   errors.value = {};
 }
 
-function addInsurance() { resetForm(); showCreateModal.value = true; }
-function closeCreateModal() { showCreateModal.value = false; errors.value = {}; }
+function addInsurance() { resetForm(); showCreateDrawer.value = true; }
+function closeCreateDrawer() { showCreateDrawer.value = false; errors.value = {}; }
 
 function validateForm(): boolean {
   errors.value = {};
@@ -354,7 +371,7 @@ async function saveAsDraft() {
       coverage_amount: newInsurance.value.coverage_amount > 0 ? newInsurance.value.coverage_amount : undefined,
       status: "DRAFT",
     });
-    showCreateModal.value = false;
+    showCreateDrawer.value = false;
     uni.showToast({ title: "Saved as draft", icon: "success", duration: 2000 });
     await fetchInsurances();
   } catch (err: any) {
@@ -377,7 +394,7 @@ async function publishInsurance() {
       coverage_amount: newInsurance.value.coverage_amount > 0 ? newInsurance.value.coverage_amount : undefined,
       status: "PUBLISHED",
     });
-    showCreateModal.value = false;
+    showCreateDrawer.value = false;
     uni.showToast({ title: "Published!", icon: "success", duration: 2000 });
     await fetchInsurances();
   } catch (err: any) {
@@ -393,19 +410,17 @@ function viewInsuranceDetails(ins: Insurance) {
 function editInsurance(ins: Insurance) {
   uni.showToast({ title: "Edit: " + ins.name, icon: "none", duration: 2000 });
 }
-function confirmDeleteInsurance(ins: Insurance) {
-  uni.showModal({
+async function confirmDeleteInsurance(ins: Insurance) {
+  confirmDrawerTone.value = "danger";
+  const ok = await confirmDrawer.request({
     title: t("merchant.deleteInsurance"),
     content: t("merchant.deleteInsuranceConfirm", { name: ins.name }),
     confirmText: t("merchant.confirm"),
     cancelText: t("merchant.cancel"),
-    success: (res) => {
-      if (res.confirm) {
-        insuranceList.value = insuranceList.value.filter(i => i.id !== ins.id);
-        uni.showToast({ title: t("merchant.insuranceDeleted"), icon: "success", duration: 2000 });
-      }
-    }
   });
+  if (!ok) return;
+  insuranceList.value = insuranceList.value.filter(i => i.id !== ins.id);
+  uni.showToast({ title: t("merchant.insuranceDeleted"), icon: "success", duration: 2000 });
 }
 </script>
 

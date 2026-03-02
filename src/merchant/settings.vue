@@ -89,13 +89,13 @@
     <BottomTabBar />
 
     <!-- Company Info Drawer -->
-    <view v-if="showCompanyInfoModal" class="drawer-overlay" @click="closeCompanyInfoModal">
+    <view v-if="showCompanyInfoDrawer" class="drawer-overlay" @click="closeCompanyInfoDrawer">
       <view class="drawer-content" @click.stop>
         <!-- Drag Handle -->
         <view class="drawer-handle"></view>
         <view class="drawer-header">
           <text class="drawer-title">{{ t('merchant.companyInfo') }}</text>
-          <view class="drawer-close" @click="closeCompanyInfoModal">
+          <view class="drawer-close" @click="closeCompanyInfoDrawer">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"/>
               <line x1="6" y1="6" x2="18" y2="18"/>
@@ -167,7 +167,7 @@
 
         <view class="drawer-footer">
           <view class="drawer-actions">
-            <view class="btn btn-secondary" @click="closeCompanyInfoModal">
+            <view class="btn btn-secondary" @click="closeCompanyInfoDrawer">
               <text>{{ t('merchant.cancel') }}</text>
             </view>
             <view class="btn btn-primary" @click="saveCompanyInfo" :class="{ loading: isSavingCompanyInfo }">
@@ -180,13 +180,13 @@
     </view>
 
     <!-- Verification Status Drawer -->
-    <view v-if="showVerificationModal" class="drawer-overlay" @click="closeVerificationModal">
+    <view v-if="showVerificationDrawer" class="drawer-overlay" @click="closeVerificationDrawer">
       <view class="drawer-content" @click.stop>
         <!-- Drag Handle -->
         <view class="drawer-handle"></view>
         <view class="drawer-header">
           <text class="drawer-title">{{ t('merchant.verificationStatus') }}</text>
-          <view class="drawer-close" @click="closeVerificationModal">
+          <view class="drawer-close" @click="closeVerificationDrawer">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"/>
               <line x1="6" y1="6" x2="18" y2="18"/>
@@ -213,7 +213,7 @@
 
         <view class="drawer-footer">
           <view class="drawer-actions">
-            <view class="btn btn-secondary" @click="closeVerificationModal">
+            <view class="btn btn-secondary" @click="closeVerificationDrawer">
               <text>{{ t('merchant.close') }}</text>
             </view>
           </view>
@@ -222,13 +222,13 @@
     </view>
 
     <!-- Bank Account Drawer -->
-    <view v-if="showBankAccountModal" class="drawer-overlay" @click="closeBankAccountModal">
+    <view v-if="showBankAccountDrawer" class="drawer-overlay" @click="closeBankAccountDrawer">
       <view class="drawer-content" @click.stop>
         <!-- Drag Handle -->
         <view class="drawer-handle"></view>
         <view class="drawer-header">
           <text class="drawer-title">{{ t('merchant.bankAccount') }}</text>
-          <view class="drawer-close" @click="closeBankAccountModal">
+          <view class="drawer-close" @click="closeBankAccountDrawer">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"/>
               <line x1="6" y1="6" x2="18" y2="18"/>
@@ -280,7 +280,7 @@
 
         <view class="drawer-footer">
           <view class="drawer-actions">
-            <view class="btn btn-secondary" @click="closeBankAccountModal">
+            <view class="btn btn-secondary" @click="closeBankAccountDrawer">
               <text>{{ t('merchant.close') }}</text>
             </view>
           </view>
@@ -289,13 +289,13 @@
     </view>
 
     <!-- Add/Edit Bank Account Drawer -->
-    <view v-if="showBankAccountFormModal" class="drawer-overlay" @click="closeBankAccountFormModal">
+    <view v-if="showBankAccountFormDrawer" class="drawer-overlay" @click="closeBankAccountFormDrawer">
       <view class="drawer-content" @click.stop>
         <!-- Drag Handle -->
         <view class="drawer-handle"></view>
         <view class="drawer-header">
           <text class="drawer-title">{{ editingBankIndex !== null ? t('merchant.editBankAccount') : t('merchant.addBankAccount') }}</text>
-          <view class="drawer-close" @click="closeBankAccountFormModal">
+          <view class="drawer-close" @click="closeBankAccountFormDrawer">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"/>
               <line x1="6" y1="6" x2="18" y2="18"/>
@@ -357,7 +357,7 @@
 
         <view class="drawer-footer">
           <view class="drawer-actions">
-            <view class="btn btn-secondary" @click="closeBankAccountFormModal">
+            <view class="btn btn-secondary" @click="closeBankAccountFormDrawer">
               <text>{{ t('merchant.cancel') }}</text>
             </view>
             <view class="btn btn-primary" @click="saveBankAccount">
@@ -369,13 +369,13 @@
     </view>
 
     <!-- Password Drawer -->
-    <view v-if="showPasswordModal" class="drawer-overlay" @click="closePasswordModal">
+    <view v-if="showPasswordDrawer" class="drawer-overlay" @click="closePasswordDrawer">
       <view class="drawer-content" @click.stop>
         <!-- Drag Handle -->
         <view class="drawer-handle"></view>
         <view class="drawer-header">
           <text class="drawer-title">{{ t('merchant.changePassword') }}</text>
-          <view class="drawer-close" @click="closePasswordModal">
+          <view class="drawer-close" @click="closePasswordDrawer">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"/>
               <line x1="6" y1="6" x2="18" y2="18"/>
@@ -420,7 +420,7 @@
 
         <view class="drawer-footer">
           <view class="drawer-actions">
-            <view class="btn btn-secondary" @click="closePasswordModal">
+            <view class="btn btn-secondary" @click="closePasswordDrawer">
               <text>{{ t('merchant.cancel') }}</text>
             </view>
             <view class="btn btn-primary" @click="savePassword" :class="{ loading: isSavingPassword }">
@@ -431,6 +431,18 @@
         </view>
       </view>
     </view>
+
+    <ConfirmDrawer
+      :open="confirmDrawer.open"
+      :title="confirmDrawer.title"
+      :content="confirmDrawer.content"
+      :confirmText="confirmDrawer.confirmText"
+      :cancelText="confirmDrawer.cancelText"
+      :tone="confirmDrawerTone"
+      :loading="confirmDrawer.loading"
+      @confirm="confirmDrawer.onConfirm"
+      @cancel="confirmDrawer.onCancel"
+    />
   </view>
 </template>
 
@@ -439,18 +451,23 @@ import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import PageHead from "../components/PageHead.vue";
 import BottomTabBar from "../components/BottomTabBar.vue";
+import ConfirmDrawer from "../components/ConfirmDrawer.vue";
+import { useConfirmDrawer } from "../utils/confirmDrawer";
 
 const { t } = useI18n();
+
+const confirmDrawer = useConfirmDrawer();
+const confirmDrawerTone = ref<"primary" | "danger">("danger");
 
 // Verification status
 const verificationStatus = ref<"pending" | "approved" | "rejected" | "under_review" | "not_submitted">("under_review");
 
-// Modals
-const showCompanyInfoModal = ref(false);
-const showVerificationModal = ref(false);
-const showBankAccountModal = ref(false);
-const showBankAccountFormModal = ref(false);
-const showPasswordModal = ref(false);
+// Drawers
+const showCompanyInfoDrawer = ref(false);
+const showVerificationDrawer = ref(false);
+const showBankAccountDrawer = ref(false);
+const showBankAccountFormDrawer = ref(false);
+const showPasswordDrawer = ref(false);
 
 // Company Info
 const companyInfo = ref({
@@ -535,18 +552,18 @@ function getVerificationDescription(status: string): string {
 }
 
 function openCompanyInfo() {
-  showCompanyInfoModal.value = true;
+  showCompanyInfoDrawer.value = true;
 }
 
-function closeCompanyInfoModal() {
-  showCompanyInfoModal.value = false;
+function closeCompanyInfoDrawer() {
+  showCompanyInfoDrawer.value = false;
 }
 
 function saveCompanyInfo() {
   isSavingCompanyInfo.value = true;
   setTimeout(() => {
     isSavingCompanyInfo.value = false;
-    showCompanyInfoModal.value = false;
+    showCompanyInfoDrawer.value = false;
     uni.showToast({
       title: t("merchant.companyInfoSaved"),
       icon: "success",
@@ -556,16 +573,16 @@ function saveCompanyInfo() {
 }
 
 function openVerificationStatus() {
-  showVerificationModal.value = true;
+  showVerificationDrawer.value = true;
 }
 
-function closeVerificationModal() {
-  showVerificationModal.value = false;
+function closeVerificationDrawer() {
+  showVerificationDrawer.value = false;
 }
 
 function submitVerification() {
   verificationStatus.value = "pending";
-  showVerificationModal.value = false;
+  showVerificationDrawer.value = false;
   uni.showToast({
     title: t("merchant.submitVerification"),
     icon: "success",
@@ -574,11 +591,11 @@ function submitVerification() {
 }
 
 function openBankAccount() {
-  showBankAccountModal.value = true;
+  showBankAccountDrawer.value = true;
 }
 
-function closeBankAccountModal() {
-  showBankAccountModal.value = false;
+function closeBankAccountDrawer() {
+  showBankAccountDrawer.value = false;
 }
 
 function addNewBankAccount() {
@@ -590,17 +607,17 @@ function addNewBankAccount() {
     swiftCode: ""
   };
   editingBankIndex.value = null;
-  showBankAccountFormModal.value = true;
+  showBankAccountFormDrawer.value = true;
 }
 
 function editBankAccount(account: BankAccount, index: number) {
   bankAccountForm.value = { ...account };
   editingBankIndex.value = index;
-  showBankAccountFormModal.value = true;
+  showBankAccountFormDrawer.value = true;
 }
 
-function closeBankAccountFormModal() {
-  showBankAccountFormModal.value = false;
+function closeBankAccountFormDrawer() {
+  showBankAccountFormDrawer.value = false;
   editingBankIndex.value = null;
 }
 
@@ -610,7 +627,7 @@ function saveBankAccount() {
   } else {
     bankAccounts.value.push({ ...bankAccountForm.value });
   }
-  closeBankAccountFormModal();
+  closeBankAccountFormDrawer();
   uni.showToast({
     title: t("merchant.bankAccountSaved"),
     icon: "success",
@@ -618,27 +635,25 @@ function saveBankAccount() {
   });
 }
 
-function deleteBankAccount(index: number) {
-  uni.showModal({
+async function deleteBankAccount(index: number) {
+  confirmDrawerTone.value = "danger";
+  const ok = await confirmDrawer.request({
     title: t("merchant.deleteBankAccount"),
     content: "Are you sure you want to delete this bank account?",
     confirmText: t("merchant.confirm"),
     cancelText: t("merchant.cancel"),
-    success: (res) => {
-      if (res.confirm) {
-        bankAccounts.value.splice(index, 1);
-        uni.showToast({
-          title: t("merchant.bankAccountDeleted"),
-          icon: "success",
-          duration: 2000
-        });
-      }
-    }
+  });
+  if (!ok) return;
+  bankAccounts.value.splice(index, 1);
+  uni.showToast({
+    title: t("merchant.bankAccountDeleted"),
+    icon: "success",
+    duration: 2000
   });
 }
 
 function openPassword() {
-  showPasswordModal.value = true;
+  showPasswordDrawer.value = true;
   passwordForm.value = {
     currentPassword: "",
     newPassword: "",
@@ -647,8 +662,8 @@ function openPassword() {
   errors.value = {};
 }
 
-function closePasswordModal() {
-  showPasswordModal.value = false;
+function closePasswordDrawer() {
+  showPasswordDrawer.value = false;
   errors.value = {};
 }
 
@@ -686,7 +701,7 @@ function savePassword() {
   isSavingPassword.value = true;
   setTimeout(() => {
     isSavingPassword.value = false;
-    showPasswordModal.value = false;
+    showPasswordDrawer.value = false;
     uni.showToast({
       title: t("merchant.passwordChanged"),
       icon: "success",

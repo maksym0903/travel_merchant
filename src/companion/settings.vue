@@ -138,6 +138,18 @@
       </view>
     </view>
 
+    <ConfirmDrawer
+      :open="confirmDrawer.open"
+      :title="confirmDrawer.title"
+      :content="confirmDrawer.content"
+      :confirmText="confirmDrawer.confirmText"
+      :cancelText="confirmDrawer.cancelText"
+      :tone="confirmDrawerTone"
+      :loading="confirmDrawer.loading"
+      @confirm="confirmDrawer.onConfirm"
+      @cancel="confirmDrawer.onCancel"
+    />
+
     <BottomTabBar />
   </view>
 </template>
@@ -148,11 +160,16 @@ import { useI18n } from "vue-i18n";
 import { getAccessToken, logoutApi } from "../api/auth";
 import { ROUTES } from "../routes";
 import { showToast } from "../utils/toast";
+import { useConfirmDrawer } from "../utils/confirmDrawer";
 import PageHead from "../components/PageHead.vue";
 import BottomTabBar from "../components/BottomTabBar.vue";
+import ConfirmDrawer from "../components/ConfirmDrawer.vue";
 
 const { t, locale } = useI18n();
 const currentLocale = locale;
+
+const confirmDrawer = useConfirmDrawer();
+const confirmDrawerTone = ref<"primary" | "danger">("danger");
 
 const loading = ref(false);
 const passwordDrawerOpen = ref(false);
@@ -196,19 +213,17 @@ async function savePassword() {
   }
 }
 
-function confirmLogout() {
-  uni.showModal({
+async function confirmLogout() {
+  confirmDrawerTone.value = "danger";
+  const ok = await confirmDrawer.request({
     title: t("companion.settings.logout"),
     content: t("companion.settings.logoutConfirm"),
     confirmText: t("companion.settings.logout"),
     cancelText: t("companion.settings.cancel"),
-    success: async (res) => {
-      if (res.confirm) {
-        await logoutApi();
-        uni.reLaunch({ url: ROUTES.LOGIN });
-      }
-    },
   });
+  if (!ok) return;
+  await logoutApi();
+  uni.reLaunch({ url: ROUTES.LOGIN });
 }
 
 onMounted(() => {

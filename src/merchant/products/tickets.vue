@@ -137,12 +137,12 @@
     <BottomTabBar />
 
     <!-- Create Ticket Drawer -->
-    <view v-if="showCreateModal" class="drawer-overlay" @click="closeCreateModal">
+    <view v-if="showCreateDrawer" class="drawer-overlay" @click="closeCreateDrawer">
       <view class="drawer-content" @click.stop>
         <view class="drawer-handle"></view>
         <view class="drawer-header">
           <text class="drawer-title">Create Ticket</text>
-          <view class="drawer-close" @click="closeCreateModal">
+          <view class="drawer-close" @click="closeCreateDrawer">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"/>
               <line x1="6" y1="6" x2="18" y2="18"/>
@@ -240,6 +240,18 @@
         </view>
       </view>
     </view>
+
+    <ConfirmDrawer
+      :open="confirmDrawer.open"
+      :title="confirmDrawer.title"
+      :content="confirmDrawer.content"
+      :confirmText="confirmDrawer.confirmText"
+      :cancelText="confirmDrawer.cancelText"
+      :tone="confirmDrawerTone"
+      :loading="confirmDrawer.loading"
+      @confirm="confirmDrawer.onConfirm"
+      @cancel="confirmDrawer.onCancel"
+    />
   </view>
 </template>
 
@@ -251,6 +263,8 @@ import BottomTabBar from "../../components/BottomTabBar.vue";
 import SearchBar from "../../components/SearchBar.vue";
 import TextInput from "../../components/TextInput.vue";
 import TextArea from "../../components/TextArea.vue";
+import ConfirmDrawer from "../../components/ConfirmDrawer.vue";
+import { useConfirmDrawer } from "../../utils/confirmDrawer";
 import {
   getMerchantTickets,
   createMerchantTicket,
@@ -260,6 +274,9 @@ import {
 } from "../../api/merchant";
 
 const { t } = useI18n();
+
+const confirmDrawer = useConfirmDrawer();
+const confirmDrawerTone = ref<"primary" | "danger">("danger");
 
 // ── Ticket display interface ──────────────────────────────────────────────────
 interface Ticket {
@@ -380,7 +397,7 @@ const ticketTypeOptions: { value: TicketType; label: string }[] = [
 ];
 
 // ── Create Drawer ─────────────────────────────────────────────────────────────
-const showCreateModal = ref(false);
+const showCreateDrawer = ref(false);
 const isSubmitting = ref(false);
 const errors = ref<Record<string, string>>({});
 
@@ -403,11 +420,11 @@ function addTicket() {
     validity_days: 0,
   };
   errors.value = {};
-  showCreateModal.value = true;
+  showCreateDrawer.value = true;
 }
 
-function closeCreateModal() {
-  showCreateModal.value = false;
+function closeCreateDrawer() {
+  showCreateDrawer.value = false;
   errors.value = {};
 }
 
@@ -440,7 +457,7 @@ async function saveAsDraft() {
       validity_days: newTicket.value.validity_days > 0 ? newTicket.value.validity_days : undefined,
       status: "DRAFT",
     });
-    showCreateModal.value = false;
+    showCreateDrawer.value = false;
     uni.showToast({ title: t("merchant.ticketSavedAsDraft") || "Saved as draft", icon: "success", duration: 2000 });
     await fetchTickets();
   } catch (err: any) {
@@ -468,7 +485,7 @@ async function submitForReview() {
       validity_days: newTicket.value.validity_days > 0 ? newTicket.value.validity_days : undefined,
       status: "PUBLISHED",
     });
-    showCreateModal.value = false;
+    showCreateDrawer.value = false;
     uni.showToast({ title: t("merchant.ticketSubmittedForReview") || "Published!", icon: "success", duration: 2000 });
     await fetchTickets();
   } catch (err: any) {
@@ -482,18 +499,18 @@ function editTicket(ticket: Ticket) {
   uni.showToast({ title: `Edit: ${ticket.attraction_name}`, icon: "none", duration: 2000 });
 }
 
-function confirmDeleteTicket(ticket: Ticket) {
-  uni.showModal({
+async function confirmDeleteTicket(ticket: Ticket) {
+  confirmDrawerTone.value = "danger";
+  const ok = await confirmDrawer.request({
     title: t("merchant.deleteTicket"),
     content: t("merchant.deleteTicketConfirm", { name: ticket.attraction_name }),
-    success: (res) => {
-      if (res.confirm) {
-        tickets.value = tickets.value.filter(tk => tk.id !== ticket.id);
-        uni.showToast({ title: t("merchant.ticketDeleted"), icon: "success", duration: 2000 });
-        fetchTickets();
-      }
-    }
+    confirmText: t("merchant.confirm"),
+    cancelText: t("merchant.cancel"),
   });
+  if (!ok) return;
+  tickets.value = tickets.value.filter(tk => tk.id !== ticket.id);
+  uni.showToast({ title: t("merchant.ticketDeleted"), icon: "success", duration: 2000 });
+  fetchTickets();
 }
 </script>
 

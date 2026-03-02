@@ -59,17 +59,18 @@
     </view>
     <BottomTabBar />
 
-    <!-- Editor modal -->
-    <view v-if="editorVisible" class="modal-overlay" @click="closeEditor">
-      <view class="modal" @click.stop>
-        <view class="modal-header">
-          <text class="modal-title">{{ editorDate }}</text>
-          <view class="modal-close" @click="closeEditor">
+    <!-- Editor Drawer -->
+    <view v-if="editorVisible" class="drawer-overlay" @click="closeEditor">
+      <view class="drawer-content" @click.stop>
+        <view class="drawer-handle"></view>
+        <view class="drawer-header">
+          <text class="drawer-title">{{ editorDate }}</text>
+          <view class="drawer-close" @click="closeEditor">
             <text>×</text>
           </view>
         </view>
 
-        <view class="modal-body">
+        <view class="drawer-body">
           <view class="toggle-row">
             <text class="toggle-label">{{ t("companion.availability.status") }}</text>
             <view class="toggle-tabs">
@@ -111,7 +112,7 @@
           </view>
         </view>
 
-        <view class="modal-actions">
+        <view class="drawer-actions">
           <view class="btn secondary" @click="clearForDay">
             <text>{{ t("companion.availability.clear") }}</text>
           </view>
@@ -591,7 +592,7 @@ onMounted(() => {
   color: #64748b;
 }
 
-.modal-overlay {
+.drawer-overlay {
   position: fixed;
   inset: 0;
   background: rgba(15, 23, 42, 0.55);
@@ -601,7 +602,7 @@ onMounted(() => {
   justify-content: center;
 }
 
-.modal {
+.drawer-content {
   width: 100%;
   max-width: min(390px, 100vw);
   background: #ffffff;
@@ -610,7 +611,15 @@ onMounted(() => {
   padding: 18rpx 16rpx 16rpx;
 }
 
-.modal-header {
+.drawer-handle {
+  width: 56rpx;
+  height: 10rpx;
+  border-radius: 999px;
+  background: #e2e8f0;
+  margin: 4rpx auto 10rpx;
+}
+
+.drawer-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -618,13 +627,13 @@ onMounted(() => {
   margin-bottom: 10rpx;
 }
 
-.modal-title {
+.drawer-title {
   font-size: 30rpx;
   font-weight: 800;
   color: #0f172a;
 }
 
-.modal-close {
+.drawer-close {
   width: 56rpx;
   height: 56rpx;
   border-radius: 16rpx;
@@ -637,7 +646,7 @@ onMounted(() => {
   color: #334155;
 }
 
-.modal-body {
+.drawer-body {
   padding: 6rpx 0 10rpx;
 }
 
@@ -733,7 +742,7 @@ onMounted(() => {
   color: #0f172a;
 }
 
-.modal-actions {
+.drawer-actions {
   display: flex;
   gap: 12rpx;
   margin-top: 12rpx;

@@ -169,12 +169,13 @@
     </view>
     <BottomTabBar />
 
-    <!-- Order Detail Modal -->
-    <view v-if="selectedOrder" class="modal-overlay" @click="closeOrderDetail">
-      <view class="modal-content order-detail-modal" @click.stop>
-        <view class="modal-header">
-          <text class="modal-title">{{ t('merchant.orderDetail') }}</text>
-          <view class="modal-close" @click="closeOrderDetail">
+    <!-- Order Detail Drawer -->
+    <view v-if="selectedOrder" class="drawer-overlay" @click="closeOrderDetail">
+      <view class="drawer-content order-detail-drawer" @click.stop>
+        <view class="drawer-handle"></view>
+        <view class="drawer-header">
+          <text class="drawer-title">{{ t('merchant.orderDetail') }}</text>
+          <view class="drawer-close" @click="closeOrderDetail">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"/>
               <line x1="6" y1="6" x2="18" y2="18"/>
@@ -182,7 +183,7 @@
           </view>
         </view>
 
-        <view class="modal-body">
+        <view class="drawer-body">
           <!-- Order ID and Status -->
           <view class="detail-section">
             <view class="detail-row">
@@ -242,8 +243,8 @@
           </view>
         </view>
 
-        <view class="modal-footer">
-          <view class="modal-actions">
+        <view class="drawer-footer">
+          <view class="drawer-actions">
             <view class="btn btn-secondary" @click="closeOrderDetail">
               <text>{{ t('merchant.close') }}</text>
             </view>
@@ -252,19 +253,20 @@
       </view>
     </view>
 
-    <!-- Follow-up Notes Modal -->
-    <view v-if="followUpOrder" class="modal-overlay" @click="closeFollowUp">
-      <view class="modal-content" @click.stop>
-        <view class="modal-header">
-          <text class="modal-title">{{ t('merchant.followUpNotes') }}</text>
-          <view class="modal-close" @click="closeFollowUp">
+    <!-- Follow-up Notes Drawer -->
+    <view v-if="followUpOrder" class="drawer-overlay" @click="closeFollowUp">
+      <view class="drawer-content" @click.stop>
+        <view class="drawer-handle"></view>
+        <view class="drawer-header">
+          <text class="drawer-title">{{ t('merchant.followUpNotes') }}</text>
+          <view class="drawer-close" @click="closeFollowUp">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"/>
               <line x1="6" y1="6" x2="18" y2="18"/>
             </svg>
           </view>
         </view>
-        <view class="modal-body">
+        <view class="drawer-body">
           <text class="detail-text" style="margin-bottom: 12px; display: block;">{{ t('merchant.followUpHint') }}</text>
           <textarea
             class="follow-up-textarea"
@@ -274,8 +276,8 @@
           />
           <text style="font-size: 12px; color: #94a3b8; text-align: right; display: block; margin-top: 4px;">{{ followUpText.length }}/500</text>
         </view>
-        <view class="modal-footer">
-          <view class="modal-actions">
+        <view class="drawer-footer">
+          <view class="drawer-actions">
             <view class="btn btn-secondary" @click="closeFollowUp">
               <text>{{ t('merchant.cancel') }}</text>
             </view>
@@ -290,6 +292,18 @@
         </view>
       </view>
     </view>
+
+    <ConfirmDrawer
+      :open="confirmDrawer.open"
+      :title="confirmDrawer.title"
+      :content="confirmDrawer.content"
+      :confirmText="confirmDrawer.confirmText"
+      :cancelText="confirmDrawer.cancelText"
+      :tone="confirmDrawerTone"
+      :loading="confirmDrawer.loading"
+      @confirm="confirmDrawer.onConfirm"
+      @cancel="confirmDrawer.onCancel"
+    />
   </view>
 </template>
 
@@ -299,6 +313,8 @@ import { useI18n } from "vue-i18n";
 import PageHead from "../components/PageHead.vue";
 import BottomTabBar from "../components/BottomTabBar.vue";
 import SearchBar from "../components/SearchBar.vue";
+import ConfirmDrawer from "../components/ConfirmDrawer.vue";
+import { useConfirmDrawer } from "../utils/confirmDrawer";
 import {
   getMerchantOrders,
   approveMerchantOrder,
@@ -327,6 +343,9 @@ const actionLoading = ref<string | null>(null);
 const followUpOrder  = ref<MerchantOrder | null>(null);
 const followUpText   = ref("");
 const savingFollowUp = ref(false);
+
+const confirmDrawer = useConfirmDrawer();
+const confirmDrawerTone = ref<"primary" | "danger">("primary");
 
 // ── Computed ──────────────────────────────────────────────────────────────────
 
@@ -390,48 +409,48 @@ function patchOrderInList(updated: MerchantOrder) {
   if (idx > -1) orders.value[idx] = updated;
 }
 
-function confirmOrder(order: MerchantOrder) {
-  uni.showModal({
+async function confirmOrder(order: MerchantOrder) {
+  confirmDrawerTone.value = "primary";
+  const ok = await confirmDrawer.request({
     title: t("merchant.confirmOrderTitle"),
     content: t("merchant.confirmOrderMessage"),
     confirmText: t("merchant.confirm"),
     cancelText: t("merchant.cancel"),
-    success: async (res) => {
-      if (!res.confirm) return;
-      actionLoading.value = order.id + "_approve";
-      try {
-        const updated = await approveMerchantOrder(order.id);
-        patchOrderInList(updated);
-        uni.showToast({ title: t("merchant.orderConfirmed"), icon: "success", duration: 2000 });
-      } catch (err: unknown) {
-        uni.showToast({ title: err instanceof Error ? err.message : t("merchant.actionFailed"), icon: "none", duration: 3000 });
-      } finally {
-        actionLoading.value = null;
-      }
-    },
   });
+  if (!ok) return;
+
+  actionLoading.value = order.id + "_approve";
+  try {
+    const updated = await approveMerchantOrder(order.id);
+    patchOrderInList(updated);
+    uni.showToast({ title: t("merchant.orderConfirmed"), icon: "success", duration: 2000 });
+  } catch (err: unknown) {
+    uni.showToast({ title: err instanceof Error ? err.message : t("merchant.actionFailed"), icon: "none", duration: 3000 });
+  } finally {
+    actionLoading.value = null;
+  }
 }
 
-function rejectOrder(order: MerchantOrder) {
-  uni.showModal({
+async function rejectOrder(order: MerchantOrder) {
+  confirmDrawerTone.value = "danger";
+  const ok = await confirmDrawer.request({
     title: t("merchant.rejectOrderTitle"),
     content: t("merchant.rejectOrderMessage"),
     confirmText: t("merchant.confirm"),
     cancelText: t("merchant.cancel"),
-    success: async (res) => {
-      if (!res.confirm) return;
-      actionLoading.value = order.id + "_reject";
-      try {
-        const updated = await rejectMerchantOrder(order.id);
-        patchOrderInList(updated);
-        uni.showToast({ title: t("merchant.orderRejected"), icon: "success", duration: 2000 });
-      } catch (err: unknown) {
-        uni.showToast({ title: err instanceof Error ? err.message : t("merchant.actionFailed"), icon: "none", duration: 3000 });
-      } finally {
-        actionLoading.value = null;
-      }
-    },
   });
+  if (!ok) return;
+
+  actionLoading.value = order.id + "_reject";
+  try {
+    const updated = await rejectMerchantOrder(order.id);
+    patchOrderInList(updated);
+    uni.showToast({ title: t("merchant.orderRejected"), icon: "success", duration: 2000 });
+  } catch (err: unknown) {
+    uni.showToast({ title: err instanceof Error ? err.message : t("merchant.actionFailed"), icon: "none", duration: 3000 });
+  } finally {
+    actionLoading.value = null;
+  }
 }
 
 function viewOrderDetails(order: MerchantOrder) {
@@ -832,8 +851,8 @@ function formatDate(iso: string): string {
 
 .payment-status text { font-family: inherit; }
 
-/* Modal Styles */
-.modal-overlay {
+/* Drawer Styles */
+.drawer-overlay {
   position: fixed;
   inset: 0;
   z-index: 1000;
@@ -849,7 +868,7 @@ function formatDate(iso: string): string {
   to   { opacity: 1; }
 }
 
-.modal-content {
+.drawer-content {
   width: 100%;
   max-width: min(390px, 100vw);
   max-height: 90vh;
@@ -866,11 +885,19 @@ function formatDate(iso: string): string {
   to   { transform: translateY(0); }
 }
 
-.order-detail-modal {
+.drawer-handle {
+  width: 48px;
+  height: 5px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  margin: 10px auto 0;
+}
+
+.order-detail-drawer {
   max-height: 85vh;
 }
 
-.modal-header {
+.drawer-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -878,13 +905,13 @@ function formatDate(iso: string): string {
   border-bottom: 1px solid #e2e8f0;
 }
 
-.modal-title {
+.drawer-title {
   font-size: 20px;
   font-weight: 600;
   color: #0f172a;
 }
 
-.modal-close {
+.drawer-close {
   width: 32px;
   height: 32px;
   display: flex;
@@ -895,17 +922,17 @@ function formatDate(iso: string): string {
   transition: all 0.2s;
 }
 
-.modal-close:active {
+.drawer-close:active {
   background: #f1f5f9;
   color: #0f172a;
 }
 
-.modal-close svg {
+.drawer-close svg {
   width: 20px;
   height: 20px;
 }
 
-.modal-body {
+.drawer-body {
   flex: 1;
   overflow-y: auto;
   padding: 20px;
@@ -1000,13 +1027,13 @@ function formatDate(iso: string): string {
   font-family: inherit;
 }
 
-.modal-footer {
+.drawer-footer {
   padding: 16px 20px;
   border-top: 1px solid #e2e8f0;
   background: #ffffff;
 }
 
-.modal-actions {
+.drawer-actions {
   display: flex;
   gap: 12px;
 }
@@ -1040,11 +1067,11 @@ function formatDate(iso: string): string {
 .btn text { font-family: inherit; }
 
 @media (min-width: 768px) {
-  .modal-overlay {
+  .drawer-overlay {
     align-items: center;
   }
 
-  .modal-content {
+  .drawer-content {
     max-height: 85vh;
     border-radius: 24px;
     max-width: 500px;
