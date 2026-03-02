@@ -1,0 +1,171 @@
+/**
+ * UniApp H5 base.css sets user-select: none on html/body, which can prevent
+ * inputs from being focused and typed in. Restore selection and ensure inputs
+ * are interactive.
+ */
+
+/* Ensure all inputs and textareas have visible border and border-radius */
+input:not(.phone-input),
+textarea {
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  box-sizing: border-box;
+}
+input:not(.phone-input):focus,
+textarea:focus {
+  border-color: #3b82f6 !important;
+}
+
+/* Phone input: no focus border/outline */
+.phone-input:focus,
+.phone-row input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Phone input slot and field: styles for dynamically created input */
+.phone-input-slot {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  display: flex;
+  background: #f8fafc;
+  padding-left: 1rem;
+  box-sizing: border-box;
+}
+.phone-input,
+.phone-row .phone-input,
+.phone-input-slot input {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.75rem 1rem 0.75rem 0;
+  border: none;
+  background: #f8fafc;
+  font-size: 1rem;
+  color: #1e293b;
+  box-sizing: border-box;
+}
+
+/* Password field: styles must be global (input is created dynamically, scoped styles don't apply) */
+.password-field .input-slot {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  display: flex;
+  box-sizing: border-box;
+}
+.password-field .input,
+.password-field input {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: 0.75rem 2.75rem 0.75rem 1rem;
+  box-sizing: border-box;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  font-size: 1rem;
+  color: #1e293b;
+}
+.password-field .input:focus,
+.password-field input:focus {
+  outline: none !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: none !important;
+}
+
+input,
+textarea,
+[contenteditable="true"] {
+  -webkit-user-select: text !important;
+  user-select: text !important;
+}
+
+input:focus,
+textarea:focus {
+  -webkit-user-select: text !important;
+  user-select: text !important;
+}
+
+/* Ensure form controls receive pointer events (e.g. inside vue-tel-input) */
+input,
+textarea,
+.vti__input,
+.password-field input,
+.phone-input-wrap input,
+.phone-input,
+.text-input-wrap input,
+.text-input-native,
+.textarea-wrap textarea,
+.textarea-native {
+  pointer-events: auto !important;
+  -webkit-user-select: text !important;
+  user-select: text !important;
+}
+
+/* Force form inputs to be focusable and clickable (UniApp H5) */
+.form input,
+.form textarea,
+.form select,
+.profile-page .form .field input,
+.profile-page .form .field textarea,
+.profile-page .form .input,
+.profile-page .form .textarea,
+.register-view .form input,
+.register-view .form select,
+.register-view .form .phone-input-wrap,
+.register-view .form .phone-input-wrap input,
+.register-view .form .phone-row,
+.register-view .form .phone-row input {
+  pointer-events: auto !important;
+  -webkit-user-select: text !important;
+  user-select: text !important;
+  position: relative;
+  z-index: 10;
+}
+/* Ensure profile page form hierarchy allows input interaction */
+.profile-page .profile-inner,
+.profile-page .form,
+.profile-page .form .field {
+  pointer-events: auto;
+}
+.profile-page .form input,
+.profile-page .form textarea {
+  cursor: text;
+}
+.register-view .form .phone-input-wrap input,
+.register-view .form .phone-row input {
+  position: relative;
+  z-index: 10;
+}
+
+/* Verification code input: styles for dynamically created input */
+.code-input-slot {
+  display: flex;
+  width: 100%;
+  min-height: 2.75rem;
+  box-sizing: border-box;
+}
+.code-input,
+.code-input-slot input {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.75rem 1rem;
+  font-size: 1.5rem;
+  letter-spacing: 0.4em;
+  text-align: center;
+  color: #1e293b;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+.code-input:focus,
+.code-input-slot input:focus {
+  outline: none !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: none !important;
+}

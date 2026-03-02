@@ -1,0 +1,126 @@
+/**
+ * Override uni-app toast and modal to match app style (login/register pages).
+ * Import in main.ts after other global styles.
+ */
+
+/* Toast – notification popup (uni.showToast) */
+uni-toast {
+  font-family: "Noto Sans SC", -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+
+.uni-sample-toast,
+.uni-simple-toast__text {
+  font-family: inherit;
+}
+
+.uni-simple-toast__text {
+  padding: 14px 24px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.45;
+  background-color: rgba(30, 41, 59, 0.92);
+  color: #f8fafc;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  -webkit-font-smoothing: antialiased;
+}
+
+.uni-toast {
+  font-family: inherit;
+  width: auto;
+  min-width: 120px;
+  max-width: 80%;
+  padding: 20px 28px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.45;
+  background: rgba(30, 41, 59, 0.92);
+  color: #f8fafc;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  -webkit-font-smoothing: antialiased;
+}
+
+.uni-toast__icon {
+  margin: 0 0 10px !important;
+  width: 40px !important;
+  height: 40px !important;
+}
+
+.uni-icon_toast {
+  margin: 0 0 10px !important;
+}
+
+.uni-icon_toast.uni-icon-success-no-circle:before {
+  color: #86efac;
+  font-size: 40px;
+}
+
+.uni-toast__content {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+/* Modal – confirm/dialog (uni.showModal) */
+uni-modal {
+  font-family: "Noto Sans SC", -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+
+.uni-modal {
+  font-family: inherit;
+  width: 85%;
+  max-width: 320px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  -webkit-font-smoothing: antialiased;
+}
+
+.uni-modal__hd {
+  padding: 24px 20px 8px;
+}
+
+.uni-modal__title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.4;
+}
+
+.uni-modal__bd {
+  padding: 12px 20px 24px;
+  font-size: 15px;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.uni-modal__ft {
+  line-height: 52px;
+  font-size: 17px;
+}
+
+.uni-modal__ft:after {
+  border-top-color: #e2e8f0;
+}
+
+.uni-modal__btn {
+  color: #EF4444;
+  font-weight: 500;
+}
+
+.uni-modal__btn:after {
+  border-left-color: #e2e8f0;
+}
+
+.uni-modal__btn:active {
+  background-color: #f1f5f9;
+}
+
+.uni-modal__btn_default {
+  color: #64748b;
+}
+
+.uni-modal__btn_primary {
+  color: #EF4444;
+}

@@ -1,0 +1,161 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "一站式旅行服务"
+      }
+    },
+    {
+      "path": "auth/register",
+      "style": {
+        "navigationBarTitleText": "注册"
+      }
+    },
+    {
+      "path": "auth/verification",
+      "style": {
+        "navigationBarTitleText": "验证手机"
+      }
+    },
+    {
+      "path": "auth/login",
+      "style": {
+        "navigationBarTitleText": "登录"
+      }
+    },
+    {
+      "path": "merchant/profile",
+      "style": {
+        "navigationBarTitleText": "商户资料"
+      }
+    },
+    {
+      "path": "merchant/dashboard",
+      "style": {
+        "navigationBarTitleText": "商户控制台"
+      }
+    },
+    {
+      "path": "merchant/orders",
+      "style": {
+        "navigationBarTitleText": "订单"
+      }
+    },
+    {
+      "path": "merchant/products/tours",
+      "style": {
+        "navigationBarTitleText": "线路"
+      }
+    },
+    {
+      "path": "merchant/products/hotels",
+      "style": {
+        "navigationBarTitleText": "酒店"
+      }
+    },
+    {
+      "path": "merchant/products/tickets",
+      "style": {
+        "navigationBarTitleText": "门票"
+      }
+    },
+    {
+      "path": "merchant/products/insurance",
+      "style": {
+        "navigationBarTitleText": "保险"
+      }
+    },
+    {
+      "path": "merchant/products/packages",
+      "style": {
+        "navigationBarTitleText": "套餐"
+      }
+    },
+    {
+      "path": "merchant/wallet",
+      "style": {
+        "navigationBarTitleText": "钱包"
+      }
+    },
+    {
+      "path": "merchant/settings",
+      "style": {
+        "navigationBarTitleText": "设置"
+      }
+    },
+    {
+      "path": "merchant/services",
+      "style": {
+        "navigationBarTitleText": "服务"
+      }
+    },
+    {
+      "path": "merchant/earnings",
+      "style": {
+        "navigationBarTitleText": "收益"
+      }
+    },
+    {
+      "path": "companion/dashboard",
+      "style": {
+        "navigationBarTitleText": "伴游控制台"
+      }
+    },
+    {
+      "path": "companion/bookings",
+      "style": {
+        "navigationBarTitleText": "订单"
+      }
+    },
+    {
+      "path": "companion/availability",
+      "style": {
+        "navigationBarTitleText": "档期"
+      }
+    },
+    {
+      "path": "companion/services",
+      "style": {
+        "navigationBarTitleText": "服务与定价"
+      }
+    },
+    {
+      "path": "companion/collaboration",
+      "style": {
+        "navigationBarTitleText": "合作"
+      }
+    },
+    {
+      "path": "companion/messages",
+      "style": {
+        "navigationBarTitleText": "消息"
+      }
+    },
+    {
+      "path": "companion/wallet",
+      "style": {
+        "navigationBarTitleText": "钱包"
+      }
+    },
+    {
+      "path": "companion/settings",
+      "style": {
+        "navigationBarTitleText": "设置"
+      }
+    },
+    {
+      "path": "companion/profile",
+      "style": {
+        "navigationBarTitleText": "我的"
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationStyle": "custom",
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "一站式旅行服务",
+    "navigationBarBackgroundColor": "#ffffff",
+    "backgroundColor": "#f8fafc"
+  }
+}
