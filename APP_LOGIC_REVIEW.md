@@ -176,7 +176,7 @@ Step 5: Review & Submit (validation checks, final submission)
 **Auto-Save Mechanism**:
 - Debounced auto-save (1 second after last change)
 - Saves to localStorage keys: `tour_basic`, `tour_itinerary`, `tour_pricing`, `tour_departures`
-- Loads saved draft when reopening create drawer
+- Loads saved draft when reopening create modal
 - Clears saved draft after successful submit
 
 ### 3.2 Orders Management (`orders.vue`)

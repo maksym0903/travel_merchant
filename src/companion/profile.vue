@@ -398,18 +398,6 @@
       </view>
     </view>
 
-    <ConfirmDrawer
-      :open="confirmDrawer.open"
-      :title="confirmDrawer.title"
-      :content="confirmDrawer.content"
-      :confirmText="confirmDrawer.confirmText"
-      :cancelText="confirmDrawer.cancelText"
-      :tone="confirmDrawerTone"
-      :loading="confirmDrawer.loading"
-      @confirm="confirmDrawer.onConfirm"
-      @cancel="confirmDrawer.onCancel"
-    />
-
   </view>
 </template>
 
@@ -429,17 +417,12 @@ import { uploadLogo, getFileUrl, getFilePathFromUploadResponse } from "../api/up
 import { getAccessToken, logoutApi } from "../api/auth";
 import { ROUTES } from "../routes";
 import { showToast } from "../utils/toast";
-import { useConfirmDrawer } from "../utils/confirmDrawer";
 import PageHead from "../components/PageHead.vue";
 import BottomTabBar from "../components/BottomTabBar.vue";
 import TextInput from "../components/TextInput.vue";
 import TextArea from "../components/TextArea.vue";
-import ConfirmDrawer from "../components/ConfirmDrawer.vue";
 
 const { t } = useI18n();
-
-const confirmDrawer = useConfirmDrawer();
-const confirmDrawerTone = ref<"primary" | "danger">("danger");
 
 const loading = ref(true);
 const saving = ref(false);
@@ -680,17 +663,19 @@ async function savePassword() {
 }
 
 // ── Logout ───────────────────────────────────────────────────────────────────
-async function confirmLogout() {
-  confirmDrawerTone.value = "danger";
-  const ok = await confirmDrawer.request({
+function confirmLogout() {
+  uni.showModal({
     title: t("companion.profile.logout"),
     content: t("companion.profile.logoutConfirm"),
     confirmText: t("companion.profile.logout"),
     cancelText: t("companion.profile.cancel"),
+    success: async (res) => {
+      if (res.confirm) {
+        await logoutApi();
+        uni.reLaunch({ url: ROUTES.INDEX });
+      }
+    },
   });
-  if (!ok) return;
-  await logoutApi();
-  uni.reLaunch({ url: ROUTES.INDEX });
 }
 
 // ── Computed ─────────────────────────────────────────────────────────────────

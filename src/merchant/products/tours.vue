@@ -120,13 +120,13 @@
     <BottomTabBar />
 
     <!-- Create Tour Drawer -->
-    <view v-if="showCreateDrawer" class="drawer-overlay" @click="closeCreateDrawer">
+    <view v-if="showCreateModal" class="drawer-overlay" @click="closeCreateModal">
       <view class="drawer-content" @click.stop>
         <!-- Drag Handle -->
         <view class="drawer-handle"></view>
         <view class="drawer-header">
           <text class="drawer-title">{{ t('merchant.createTour') }}</text>
-          <view class="drawer-close" @click="closeCreateDrawer">
+          <view class="drawer-close" @click="closeCreateModal">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"/>
               <line x1="6" y1="6" x2="18" y2="18"/>
@@ -262,7 +262,7 @@
 
         <view class="drawer-footer">
           <view class="drawer-actions">
-            <view class="btn btn-secondary" @click="closeCreateDrawer">
+            <view class="btn btn-secondary" @click="closeCreateModal">
               <text>{{ t('merchant.cancel') }}</text>
             </view>
             <view class="drawer-actions-final">
@@ -279,18 +279,6 @@
         </view>
       </view>
     </view>
-
-    <ConfirmDrawer
-      :open="confirmDrawer.open"
-      :title="confirmDrawer.title"
-      :content="confirmDrawer.content"
-      :confirmText="confirmDrawer.confirmText"
-      :cancelText="confirmDrawer.cancelText"
-      :tone="confirmDrawerTone"
-      :loading="confirmDrawer.loading"
-      @confirm="confirmDrawer.onConfirm"
-      @cancel="confirmDrawer.onCancel"
-    />
   </view>
 </template>
 
@@ -302,15 +290,10 @@ import BottomTabBar from "../../components/BottomTabBar.vue";
 import SearchBar from "../../components/SearchBar.vue";
 import TextInput from "../../components/TextInput.vue";
 import TextArea from "../../components/TextArea.vue";
-import ConfirmDrawer from "../../components/ConfirmDrawer.vue";
-import { useConfirmDrawer } from "../../utils/confirmDrawer";
 import { getMerchantRoutes, createMerchantRoute, type MerchantRoute, type RouteStatus } from "../../api/merchant";
 import { uploadLogo, getFileUrl, getFilePathFromUploadResponse } from "../../api/uploadLogo";
 
 const { t } = useI18n();
-
-const confirmDrawer = useConfirmDrawer();
-const confirmDrawerTone = ref<"primary" | "danger">("danger");
 
 // ── Tour display interface — mirrors MerchantRoute from the API ─────────────
 interface Tour {
@@ -459,7 +442,7 @@ function removeGalleryImage(index: number) {
 
 const searchQuery = ref("");
 const activeFilter = ref<"all" | "draft" | "online" | "paused">("all");
-const showCreateDrawer = ref(false);
+const showCreateModal = ref(false);
 const isSubmitting = ref(false);
 
 // Form state — fields match POST /api/merchant/routes exactly
@@ -491,7 +474,7 @@ async function saveAsDraft() {
       status: "DRAFT",
     });
     clearSavedDraft();
-    showCreateDrawer.value = false;
+    showCreateModal.value = false;
     uni.showToast({ title: t("merchant.tourSavedAsDraft"), icon: "success", duration: 2000 });
     fetchTours();
   } catch (err: any) {
@@ -518,7 +501,7 @@ async function submitForReview() {
       status: "PUBLISHED",
     });
     clearSavedDraft();
-    showCreateDrawer.value = false;
+    showCreateModal.value = false;
     uni.showToast({ title: t("merchant.tourSubmittedForReview"), icon: "success", duration: 2000 });
     fetchTours();
   } catch (err: any) {
@@ -590,13 +573,13 @@ function addTour() {
     newTour.value = { name: "", region: "", description: "", coverImage: "", galleryImages: [] };
   }
   errors.value = {};
-  showCreateDrawer.value = true;
+  showCreateModal.value = true;
 }
 
 
-function closeCreateDrawer() {
+function closeCreateModal() {
   autoSaveDraft();
-  showCreateDrawer.value = false;
+  showCreateModal.value = false;
   errors.value = {};
 }
 
@@ -648,16 +631,18 @@ function editTour(tour: Tour) {
   });
 }
 
-async function confirmDeleteTour(tour: Tour) {
-  confirmDrawerTone.value = "danger";
-  const ok = await confirmDrawer.request({
+function confirmDeleteTour(tour: Tour) {
+  uni.showModal({
     title: t("merchant.deleteTour"),
     content: t("merchant.deleteTourConfirm"),
     confirmText: t("merchant.confirm"),
     cancelText: t("merchant.cancel"),
+    success: (res) => {
+      if (res.confirm) {
+        deleteTour(tour);
+      }
+    }
   });
-  if (!ok) return;
-  deleteTour(tour);
 }
 
 function deleteTour(tour: Tour) {

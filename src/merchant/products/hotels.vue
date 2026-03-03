@@ -126,13 +126,13 @@
     <BottomTabBar />
 
     <!-- Create Hotel Drawer -->
-    <view v-if="showCreateDrawer" class="drawer-overlay" @click="closeCreateDrawer">
+    <view v-if="showCreateModal" class="drawer-overlay" @click="closeCreateModal">
       <view class="drawer-content" @click.stop>
         <!-- Drag Handle -->
         <view class="drawer-handle"></view>
         <view class="drawer-header">
           <text class="drawer-title">{{ t('merchant.createHotel') || 'Create Hotel' }}</text>
-          <view class="drawer-close" @click="closeCreateDrawer">
+          <view class="drawer-close" @click="closeCreateModal">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"/>
               <line x1="6" y1="6" x2="18" y2="18"/>
@@ -314,7 +314,7 @@
 
         <view class="drawer-footer">
           <view class="drawer-actions">
-            <view class="btn btn-secondary" @click="closeCreateDrawer">
+            <view class="btn btn-secondary" @click="closeCreateModal">
               <text>{{ t('merchant.cancel') }}</text>
             </view>
             <view class="drawer-actions-final">
@@ -331,18 +331,6 @@
         </view>
       </view>
     </view>
-
-    <ConfirmDrawer
-      :open="confirmDrawer.open"
-      :title="confirmDrawer.title"
-      :content="confirmDrawer.content"
-      :confirmText="confirmDrawer.confirmText"
-      :cancelText="confirmDrawer.cancelText"
-      :tone="confirmDrawerTone"
-      :loading="confirmDrawer.loading"
-      @confirm="confirmDrawer.onConfirm"
-      @cancel="confirmDrawer.onCancel"
-    />
   </view>
 </template>
 
@@ -354,8 +342,6 @@ import BottomTabBar from "../../components/BottomTabBar.vue";
 import SearchBar from "../../components/SearchBar.vue";
 import TextInput from "../../components/TextInput.vue";
 import TextArea from "../../components/TextArea.vue";
-import ConfirmDrawer from "../../components/ConfirmDrawer.vue";
-import { useConfirmDrawer } from "../../utils/confirmDrawer";
 import {
   getMerchantHotels,
   createMerchantHotel,
@@ -365,9 +351,6 @@ import {
 import { uploadLogo, getFileUrl, getFilePathFromUploadResponse } from "../../api/uploadLogo";
 
 const { t } = useI18n();
-
-const confirmDrawer = useConfirmDrawer();
-const confirmDrawerTone = ref<"primary" | "danger">("danger");
 
 // ── Hotel display interface — mirrors MerchantHotel from the API ─────────────
 interface Hotel {
@@ -510,7 +493,7 @@ function toggleAmenity(key: string) {
 // ── Form state ──────────────────────────────────────────────────────────────
 const searchQuery = ref("");
 const activeFilter = ref<"all" | "draft" | "online" | "paused">("all");
-const showCreateDrawer = ref(false);
+const showCreateModal = ref(false);
 const isSubmitting = ref(false);
 
 const newHotel = ref({
@@ -566,7 +549,7 @@ async function saveAsDraft() {
       status: "DRAFT",
     });
     clearSavedDraft();
-    showCreateDrawer.value = false;
+    showCreateModal.value = false;
     uni.showToast({ title: t("merchant.hotelSavedAsDraft"), icon: "success", duration: 2000 });
     fetchHotels();
   } catch (err: any) {
@@ -596,7 +579,7 @@ async function submitForReview() {
       status: "PUBLISHED",
     });
     clearSavedDraft();
-    showCreateDrawer.value = false;
+    showCreateModal.value = false;
     uni.showToast({ title: t("merchant.hotelSubmittedForReview"), icon: "success", duration: 2000 });
     fetchHotels();
   } catch (err: any) {
@@ -680,12 +663,12 @@ function addHotel() {
     };
   }
   errors.value = {};
-  showCreateDrawer.value = true;
+  showCreateModal.value = true;
 }
 
-function closeCreateDrawer() {
+function closeCreateModal() {
   autoSaveDraft();
-  showCreateDrawer.value = false;
+  showCreateModal.value = false;
   errors.value = {};
 }
 
@@ -693,16 +676,16 @@ function editHotel(hotel: Hotel) {
   uni.showToast({ title: `${t("merchant.editHotel") || "Edit"}: ${hotel.name}`, icon: "none", duration: 2000 });
 }
 
-async function confirmDeleteHotel(hotel: Hotel) {
-  confirmDrawerTone.value = "danger";
-  const ok = await confirmDrawer.request({
+function confirmDeleteHotel(hotel: Hotel) {
+  uni.showModal({
     title: t("merchant.deleteHotel"),
     content: t("merchant.deleteHotelConfirm", { name: hotel.name }),
     confirmText: t("merchant.confirm"),
     cancelText: t("merchant.cancel"),
+    success: (res) => {
+      if (res.confirm) deleteHotel(hotel);
+    },
   });
-  if (!ok) return;
-  deleteHotel(hotel);
 }
 
 function deleteHotel(hotel: Hotel) {
